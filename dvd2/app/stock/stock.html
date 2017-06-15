@@ -1,0 +1,17 @@
+<p>Inventory</p>
+
+
+<select ng-model="Store" ng-Value="ID"  ng-options="x.City for x in Stores">
+</select>
+
+<div ng-controller="invCtl">
+<p>Displaying stock for store {{Store.ID}}</p>
+<table class="table" >
+    <tr ng-repeat="x in Stock">
+        <td title="'Name'" >
+            {{x.Title}}</td>
+        <td title="' number'" >
+            {{x.DVDCount}}</td>
+    </tr>
+</table>
+</div>

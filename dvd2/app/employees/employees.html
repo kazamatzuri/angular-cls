@@ -1,0 +1,11 @@
+<p>Employees</p>
+
+<table class="table" >
+    <tr ng-repeat="x in Employees">
+        <td title="'Name'" >
+            {{x.Name}}</td>
+        <td title="'DOB'" >
+            {{x.DOB}}</td>
+            <td><a ng-click="fireEmployee(x.ID)" href="#">fire!</a></td>
+    </tr>
+</table>
