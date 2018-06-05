@@ -6,6 +6,8 @@
             {{x.Name}}</td>
         <td title="'DOB'" >
             {{x.DOB}}</td>
-            <td><a ng-click="fireEmployee(x.ID)" href="#">fire!</a></td>
+            <td><span ng-click="fireEmployee(x)" ><b>  fire!</b></span></td>
     </tr>
 </table>
+
+<p style="color:red">{{status}}</p>

@@ -22,7 +22,7 @@ config(['$locationProvider', '$routeProvider', function($locationProvider, $rout
 }]).
 factory('DVDFactory', ['$http', function($http) {
 
-	var urlBase = '/csp/dvd/api/dvds';
+	var urlBase = 'http://localhost:57772/csp/dvd/api/dvds';
 	var DVDFactory = {};
 
 	DVDFactory.getDVDs = function () {
@@ -49,7 +49,7 @@ factory('DVDFactory', ['$http', function($http) {
 }]).
 factory('StoreFactory', ['$http', function($http) {
 
-	var urlBase = '/csp/dvd/api/stores';
+	var urlBase = 'http://localhost:57772/csp/dvd/api/stores';
 	var StoreFactory = {};
 
 	StoreFactory.getStores = function () {
@@ -64,7 +64,7 @@ factory('StoreFactory', ['$http', function($http) {
 }])
 .factory('SaleFactory', ['$http', function($http) {
 
-	var urlBase = '/csp/dvd/api/sales';
+	var urlBase = 'http://localhost:57772/csp/dvd/api/sales';
 	var SaleFactory = {};
 
 	SaleFactory.getSales = function () {
@@ -79,7 +79,7 @@ factory('StoreFactory', ['$http', function($http) {
 }])
 .factory('EmployeeFactory', ['$http', function($http) {
 
-	var urlBase = '/csp/dvd/api/employees';
+	var urlBase = 'http://localhost:57772/csp/dvd/api/employees';
 	var EmployeeFactory = {};
 
 	EmployeeFactory.getEmployees = function () {
@@ -89,27 +89,23 @@ factory('StoreFactory', ['$http', function($http) {
 	EmployeeFactory.getEmployee = function (id) {
 		return $http.get(urlBase + '/' + id);
 	};
-	
+
 	EmployeeFactory.deleteEmployee = function (id) {
+    console.log("factory deleting "+ id);
 		return $http.delete(urlBase + '/' + id);
 	};
-
-
 	return EmployeeFactory;
 }])
 .factory('StockFactory', ['$http', function($http) {
 
-	var urlBase = '/csp/dvd/api/stock';
+	var urlBase = 'http://localhost:57772/csp/dvd/api/stock';
 	var StockFactory = {};
 
 	StockFactory.getStock = function (id) {
 		return $http.get(urlBase + '/' + id);
 	};
-	
+
 
 	return StockFactory;
 }])
 ;
-
-
-

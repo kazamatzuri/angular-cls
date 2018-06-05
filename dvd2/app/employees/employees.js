@@ -10,9 +10,11 @@ angular.module('myApp.employees', ['ngRoute'])
 }])
 
 .controller('EmployeeCtrl', ['$scope','EmployeeFactory',function($scope,EmployeeFactory) {
-	//$scope.items = [];
     $scope.Employees;
+    $scope.fireEmployee=fireEmployee;
+
     getEmployees();
+
 
     function getEmployees() {
         EmployeeFactory.getEmployees()
@@ -23,4 +25,14 @@ angular.module('myApp.employees', ['ngRoute'])
             });
     }
 
-}]);    
+    function fireEmployee(id) {
+      console.log("callback deleting "+id.ID);
+      EmployeeFactory.deleteEmployee(id.ID)
+          .then(function (response) {
+
+              //nothing to do
+          }, function (error) {
+              $scope.status = 'Unable to fire Employee: ' + error.data;
+          });   }
+
+}]);
