@@ -1,11 +1,14 @@
 Class API.Handler Extends %CSP.REST
 {
 
+Parameter HandleCorsRequest="1";
+
 XData UrlMap [ XMLNamespace = "http://www.intersystems.com/urlmap" ]
 {
 <Routes>
 
 <Route Url="/dvds[/]?([^/]?)" Method="GET" Call="DVDs"/>
+<Route Url="/dvds" Method="POST" Call="AddDVD"/>
 <Route Url="/stores[/]?([^/]?)" Method="GET" Call="Stores" />
 <Route Url="/sales[/]?([^/]?)" Method="GET" Call="Sales" />
 <Route Url="/employees[/]?([^/]?)" Method="GET" Call="Employee" />
@@ -14,10 +17,45 @@ XData UrlMap [ XMLNamespace = "http://www.intersystems.com/urlmap" ]
 </Routes>
 }
 
-ClassMethod DeleteEmployee(id as %String) as %Status {
+ClassMethod AddDVD() as %Status{
+	s ^%kdebug($I(^%kdebug))="insert"
+	Set %response.ContentType="application/json"
+	try {
+	       set obj = ##class(%DynamicAbstractObject).%FromJSON(%request.Content)
+	       s dvd=##class(CZT.DVD).%New()
+	       s dvd.Title=obj.Title
+	       s dvd.Price=obj.Price
+	       s dvd.Length=obj.Length
+	       s dvd.Rating=obj.Rating
+	       s sc=dvd.%Save()
+	       i '$$$ISOK(sc){
+				s %response.Status=400
+				s err={}
+				s err.text=$SYSTEM.Status.GetErrorText(sc)
+				w err.%ToJSON()
+				return $$$OK
+		   } else {
+		   	s %response.Status=200
+		   	return $$$OK
+		   }
+
+	} catch ex {
+		//TODO: add fancy error handling ;)
+	       set obj = ""
+	}
+    
+	return $$$OK
+}
+ClassMethod DeleteEmployee(id As %String) As %Status
+{
 	if (id'="") {
 		if ##class(CZT.Employee).%ExistsId(id) {
-			d ##class(CZT.Employee).%DeleteId(id)
+			s sc=##class(CZT.Employee).%DeleteId(id)
+			i '$$$ISOK(sc){
+				s %response.Status=400
+				w $SYSTEM.Status.GetErrorText(sc)
+				q $$$OK
+			}
 		} else {
 			s %response.Status=404
 			q $$$OK
@@ -26,8 +64,8 @@ ClassMethod DeleteEmployee(id as %String) as %Status {
 	q $$$OK
 }
 
-
-ClassMethod Employee(id as %String) as %Status {
+ClassMethod Employee(id As %String) As %Status
+{
 	if (id'="") {
 		s emp=##Class(CZT.Employee).%OpenId(id)
 		if $IsObject(emp){
@@ -46,8 +84,8 @@ ClassMethod Employee(id as %String) as %Status {
 	q $$$OK
 }
 
-
-ClassMethod Sales(id as %String) as %Status {
+ClassMethod Sales(id As %String) As %Status
+{
 	if (id'="") {
 		s sale=##Class(CZT.Sale).%OpenId(id)
 		if $IsObject(sale){
@@ -67,8 +105,8 @@ ClassMethod Sales(id as %String) as %Status {
 	q $$$OK
 }
 
-
-ClassMethod Stores(id as %String) as %Status {
+ClassMethod Stores(id As %String) As %Status
+{
 	if (id'="") {
 		s store=##Class(CZT.Store).%OpenId(id)
 		if $IsObject(store){
@@ -91,12 +129,14 @@ ClassMethod Stores(id as %String) as %Status {
 	q $$$OK
 }
 
-ClassMethod Stocked(storeid as %String) as %Status {
+ClassMethod Stocked(storeid As %String) As %Status
+{
 	w ##class(%ZEN.Auxiliary.jsonSQLProvider).%WriteJSONFromSQL(,"select DVD->Title,DVDCount from CZT.Inventory where Store='"_storeid_"'")
 	q $$$OK
 }
 
-ClassMethod DVDs(id as %String) as %Status {
+ClassMethod DVDs(id As %String) As %Status
+{
 	if (id'="") {
 		s dvd=##Class(CZT.DVD).%OpenId(id)
 		if $IsObject(dvd){
