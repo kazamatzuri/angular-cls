@@ -34,6 +34,7 @@ factory('DVDFactory', ['$http', function($http) {
 	};
 
 	DVDFactory.insertDVD = function (cust) {
+    
 		return $http.post(urlBase, cust);
 	};
 

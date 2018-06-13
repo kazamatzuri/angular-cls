@@ -2,3 +2,33 @@
 <ul>
     <li ng-repeat="x in DVDS">{{x.Title}} rated {{x.Rating}}</li>
 </ul>
+
+<p> add DVD</p>
+
+<div class="input-group">
+  <div class="input-group-prepend">
+    <span class="input-group-text">Title</span>
+  </div>
+  <textarea class="form-control" aria-label="With textarea" ng-model="dvd.Title"></textarea>
+</div>
+<div class="input-group input-group-sm mb-3">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="inputGroup-sizing-sm">Length</span>
+  </div>
+  <input type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" ng-model="dvd.Length">
+</div>
+<div class="input-group input-group-sm mb-3">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="inputGroup-sizing-sm">Price</span>
+  </div>
+  <input type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" ng-model="dvd.Price">
+</div>
+<div class="input-group input-group-sm mb-3">
+  <div class="input-group-prepend">
+    <span class="input-group-text" id="inputGroup-sizing-sm">Rating</span>
+  </div>
+  <input type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" ng-model="dvd.Rating">
+</div>
+<button type="button" class="btn btn-primary btn-lg btn-block" ng-click="addDvd()">Add</button>
+
+<p style="color:red">{{status}}</p>
