@@ -26,10 +26,12 @@ angular.module('myApp.view1', ['ngRoute'])
     $scope.addDvd = function addDvd() {
       DVDFactory.insertDVD($scope.dvd).then(function (response) {
           $scope.status = "saved ok";
+          getDVDs();
+          $scope.dvd="";
            //nothing to do
        }, function (error) {
          console.log(error);
-           $scope.status = 'Unable to save DVD: ' + error.data.text;
+           $scope.status = 'Unable to save DVD: ' + error.data.text;``
        });
     }
 
