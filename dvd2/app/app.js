@@ -34,7 +34,6 @@ factory('DVDFactory', ['$http', function($http) {
 	};
 
 	DVDFactory.insertDVD = function (cust) {
-    
 		return $http.post(urlBase, cust);
 	};
 
@@ -42,8 +41,9 @@ factory('DVDFactory', ['$http', function($http) {
 		return $http.put(urlBase + '/' + cust.ID, cust)
 	};
 
-	DVDFactory.deleteDVD = function (id) {
-		return $http.delete(urlBase + '/' + id);
+	DVDFactory.deleteDVD = function (ids) {
+    console.log(ids);
+		return $http.delete(urlBase + '?ids=' + ids);
 	};
 
 	return DVDFactory;
@@ -71,6 +71,10 @@ factory('StoreFactory', ['$http', function($http) {
 	SaleFactory.getSales = function () {
 		return $http.get(urlBase);
 	};
+
+  SaleFactory.insertSale = function (sale) {
+    return $http.post(urlBase, sale);
+  }
 
 	SaleFactory.getSale = function (id) {
 		return $http.get(urlBase + '/' + id);

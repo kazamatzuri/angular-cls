@@ -26,8 +26,8 @@ angular.module('myApp.employees', ['ngRoute'])
     }
 
     function fireEmployee(id) {
-      console.log("callback deleting "+id.ID);
-      EmployeeFactory.deleteEmployee(id.ID)
+      console.log("callback deleting "+id);
+      EmployeeFactory.deleteEmployee(id)
           .then(function (response) {
 
               //nothing to do

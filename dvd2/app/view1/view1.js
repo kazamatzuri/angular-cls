@@ -12,8 +12,22 @@ angular.module('myApp.view1', ['ngRoute'])
 .controller('View1Ctrl', ['$scope','DVDFactory',function($scope,DVDFactory) {
 	//$scope.items = [];
     $scope.DVDS;
-    getDVDs();
+    $scope.selection=[];
 
+    getDVDs();
+    $scope.toggleSelection = function toggleSelection(dvdid) {
+    var idx = $scope.selection.indexOf(dvdid);
+
+    // Is currently selected
+    if (idx > -1) {
+      $scope.selection.splice(idx, 1);
+    }
+
+    // Is newly selected
+    else {
+      $scope.selection.push(dvdid);
+    }
+  };
     function getDVDs() {
         DVDFactory.getDVDs()
             .then(function (response) {
@@ -32,6 +46,17 @@ angular.module('myApp.view1', ['ngRoute'])
        }, function (error) {
          console.log(error);
            $scope.status = 'Unable to save DVD: ' + error.data.text;``
+       });
+    }
+
+    $scope.deleteDvd = function deleteDvd() {
+      DVDFactory.deleteDVD($scope.selection).then(function (response) {
+          $scope.status = "deleted";
+          getDVDs();
+           //nothing to do
+       }, function (error) {
+         console.log(error);
+           $scope.status = 'Unable to delete DVD: ' + error.data.text;``
        });
     }
 

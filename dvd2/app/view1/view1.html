@@ -1,7 +1,17 @@
 <p>DVDs</p>
-<ul>
-    <li ng-repeat="x in DVDS">{{x.Title}} rated {{x.Rating}}</li>
-</ul>
+<table>
+    <tr ng-repeat="x in DVDS"><td>{{x.Title}} </td><td>{{x.Rating}}</<td>
+     <td><span ng-click="fireEmployee(x.ID)" >
+       <input
+       type="checkbox"
+       name="selectedDvds[]"
+       value="x.ID"
+       ng-checked="selection.indexOf(x) > -1"
+       ng-click="toggleSelection(x.ID)"></span></td>
+   </tr>
+</table>
+
+<button type="button" class="btn btn-danger" ng-click="deleteDvd()">Delete selected</button>
 
 <p> add DVD</p>
 

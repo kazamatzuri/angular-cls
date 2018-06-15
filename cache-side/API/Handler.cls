@@ -8,20 +8,50 @@ XData UrlMap [ XMLNamespace = "http://www.intersystems.com/urlmap" ]
 <Routes>
 
 <Route Url="/dvds[/]?([^/]?)" Method="GET" Call="DVDs"/>
+<Route Url="/bdvds" Method="GET" Call="BenDVDs"/>
+<Route Url="/dvds" Method="DELETE" Call="DeleteDvds"/>
 <Route Url="/dvds" Method="POST" Call="AddDVD"/>
 <Route Url="/stores[/]?([^/]?)" Method="GET" Call="Stores" />
 <Route Url="/sales[/]?([^/]?)" Method="GET" Call="Sales" />
+<Route Url="/sales" Method="POST" Call="AddSale" />
 <Route Url="/employees[/]?([^/]?)" Method="GET" Call="Employee" />
 <Route Url="/employees/:id" Method="DELETE" Call="DeleteEmployee"/>
 <Route Url="/stock/:storeid" Method="GET" Call="Stocked"/>
 </Routes>
 }
+ClassMethod AddSale() as %Status {
+	
+}
+
+ClassMethod DeleteDvds() As %Status
+{
+	s ids=$G(%request.Data("ids",1))
+	s ^%kdebug($I(^%kdebug))="deleting:"_ids
+	s err={}
+	s err.text=""
+	if (ids'="") {
+		for i=1:1:$L(ids,",") {
+			s currentid=$P(ids,",",i)
+			if ##class(CZT.DVD).%ExistsId(currentid) {
+				s sc=##class(CZT.DVD).%DeleteId(currentid)
+				i '$$$ISOK(sc){
+				s %response.Status=400
+				s err.text=err.text_$SYSTEM.Status.GetErrorText(sc)
+			}
+			}
+		}
+	} 
+	d err.%ToJSON()
+	q $$$OK
+}
+
 
 ClassMethod AddDVD() as %Status{
-	s ^%kdebug($I(^%kdebug))="insert"
 	Set %response.ContentType="application/json"
 	try {
 	       set obj = ##class(%DynamicAbstractObject).%FromJSON(%request.Content)
+	       d %request.Content.Rewind()
+	       s ^%kdebug($I(^%kdebug))=%request.Content.Read(1000)
 	       s dvd=##class(CZT.DVD).%New()
 	       s dvd.Title=obj.Title
 	       s dvd.Price=obj.Price
@@ -156,5 +186,38 @@ ClassMethod DVDs(id As %String) As %Status
 	}
 	q $$$OK
 }
+
+ClassMethod BenDVDs() as %Status {
+    #dim st as %Status = $$$OK
+        #dim e as %Exception.AbstractException
+       
+        try {
+            if $get(%request.CgiEnvs("HTTP_ACCEPT"))["application/json" {
+                set %response.ContentType="application/json"
+                set inventory = ##class(%DynamicArray).%New()
+               
+                &sql(declare c cursor for
+                     select *
+                     from CZT.DVD)
+                &sql(open c)
+                for {
+                    set dvd = ##class(%DynamicObject).%New()
+                    &sql(fetch c into :dvd.ID, :dvd.Length, :dvd.Price, :dvd.Rating, :dvd.Title)
+                    quit:(SQLCODE '= 0)
+                    do inventory.%Push(dvd)
+                }
+               
+                write inventory.%ToJSON()
+                &sql(close c)
+            }
+        }
+        catch e {
+            set st = e.AsStatus()
+            write st
+        }
+        quit $$$OK
+	return $$$OK
+}
+	
 
 }
